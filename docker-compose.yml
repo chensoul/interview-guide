@@ -83,7 +83,7 @@ services:
     volumes:
       - minio_data:/data
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:9000/minio/health/live >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live >/dev/null 2>&1 || wget -q -O - http://localhost:9000/minio/health/live >/dev/null 2>&1 || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -107,7 +107,7 @@ services:
       /bin/sh -c "
       echo 'waiting for MinIO to be ready...';
       for i in $(seq 1 60); do
-        /usr/bin/mc alias set myminio http://interview-minio:9000 minioadmin minioadmin && /usr/bin/mc ls myminio >/dev/null 2>&1 && break || true;
+        /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin && /usr/bin/mc ls myminio >/dev/null 2>&1 && break || true;
         echo 'MinIO not ready yet, retrying...';
         sleep 2;
       done;
