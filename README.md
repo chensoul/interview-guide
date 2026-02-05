@@ -278,9 +278,6 @@ app:
     secret-key: ${APP_STORAGE_SECRET_KEY:GtKxV57WJkpw4CvASPBzTy2DYElLnRqh8dIXQa0m}
     bucket: ${APP_STORAGE_BUCKET:interview-guide}
     region: ${APP_STORAGE_REGION:us-east-1}
-    
-
-
 ```
 
 ⚠️**注意**：
@@ -345,6 +342,8 @@ docker-compose up -d --build
 | **MinIO API**    | `localhost:9000`                               | -            | -            | S3 兼容接口            |
 | **PostgreSQL**   | `localhost:5432`                               | `postgres`   | `password`   | 数据库 (包含 pgvector) |
 | **Redis**        | `localhost:6379`                               | -            | -            | 缓存与消息队列         |
+
+登录MinIO 控制台，创建一个 Bucket 名称为 interview-guide。
 
 ### 4. 常用运维命令
 

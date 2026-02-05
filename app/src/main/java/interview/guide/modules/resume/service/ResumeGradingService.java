@@ -1,5 +1,6 @@
 package interview.guide.modules.resume.service;
 
+import interview.guide.common.JSONRepairUtil;
 import interview.guide.common.exception.BusinessException;
 import interview.guide.common.exception.ErrorCode;
 import interview.guide.modules.interview.model.ResumeAnalysisResponse;
@@ -13,6 +14,9 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
+import io.github.haibiiin.json.repair.JSONRepair;
+import io.github.haibiiin.json.repair.JSONRepairConfig;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +37,8 @@ public class ResumeGradingService {
     private final PromptTemplate systemPromptTemplate;
     private final PromptTemplate userPromptTemplate;
     private final BeanOutputConverter<ResumeAnalysisResponseDTO> outputConverter;
-    
+    private final ObjectMapper objectMapper;
+
     // 中间DTO用于接收AI响应
     private record ResumeAnalysisResponseDTO(
         int overallScore,
@@ -61,11 +66,13 @@ public class ResumeGradingService {
     public ResumeGradingService(
             ChatClient.Builder chatClientBuilder,
             @Value("classpath:prompts/resume-analysis-system.st") Resource systemPromptResource,
-            @Value("classpath:prompts/resume-analysis-user.st") Resource userPromptResource) throws IOException {
+            @Value("classpath:prompts/resume-analysis-user.st") Resource userPromptResource,
+            ObjectMapper objectMapper) throws IOException {
         this.chatClient = chatClientBuilder.build();
         this.systemPromptTemplate = new PromptTemplate(systemPromptResource.getContentAsString(StandardCharsets.UTF_8));
         this.userPromptTemplate = new PromptTemplate(userPromptResource.getContentAsString(StandardCharsets.UTF_8));
         this.outputConverter = new BeanOutputConverter<>(ResumeAnalysisResponseDTO.class);
+        this.objectMapper = objectMapper;
     }
     
     /**
@@ -99,8 +106,20 @@ public class ResumeGradingService {
                     .entity(outputConverter);
                 log.debug("AI响应解析成功: overallScore={}", dto.overallScore());
             } catch (Exception e) {
-                log.error("简历分析AI调用失败: {}", e.getMessage(), e);
-                throw new BusinessException(ErrorCode.RESUME_ANALYSIS_FAILED, "简历分析失败：" + e.getMessage());
+                log.warn("结构化解析失败，尝试修复JSON后重试: {}", e.getMessage());
+                String raw = chatClient.prompt()
+                    .system(systemPromptWithFormat)
+                    .user(userPrompt)
+                    .call()
+                    .content();
+                String repaired = JSONRepairUtil.repair(raw);
+                try {
+                    dto = objectMapper.readValue(repaired, ResumeAnalysisResponseDTO.class);
+                    log.debug("修复后解析成功: overallScore={}", dto.overallScore());
+                } catch (tools.jackson.core.JacksonException ex) {
+                    log.error("修复后仍解析失败: {}", ex.getMessage(), ex);
+                    throw new BusinessException(ErrorCode.RESUME_ANALYSIS_FAILED, "简历分析失败：" + e.getMessage());
+                }
             }
             
             // 转换为业务对象

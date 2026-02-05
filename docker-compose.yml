@@ -11,8 +11,8 @@ services:
   #   - 向量数据库是 LLM 应用开发中的核心基础设施。
   # =========================================
   postgres:
-    # 使用带有 pgvector 插件的 PostgreSQL 16 镜像
-    image: pgvector/pgvector:pg16
+    # 使用带有 pgvector 插件的 PostgreSQL 18 镜像
+    image: pgvector/pgvector:pg18
     container_name: interview-postgres
     environment:
       POSTGRES_USER: postgres
@@ -20,7 +20,7 @@ services:
       POSTGRES_DB: interview_guide
     volumes:
       # 数据持久化：确保容器重启或删除后，数据库数据不丢失
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
       # 初始化脚本：容器首次启动时会自动执行 /docker-entrypoint-initdb.d/ 下的 .sql 文件
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
