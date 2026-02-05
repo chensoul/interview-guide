@@ -51,7 +51,7 @@ dependencies {
     // JSON修复库（处理LLM返回的异常JSON）
     implementation 'io.github.haibiiin:json-repair:0.3.0'
     // 对齐 ANTLR 运行时版本，避免 ATN 反序列化版本不匹配
-    implementation 'org.antlr:antlr4-runtime:4.8'
+    implementation 'org.antlr:antlr4-runtime:4.13.2'
 
     // Lombok
     compileOnly libs.lombok

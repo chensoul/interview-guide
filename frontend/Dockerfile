@@ -19,6 +19,9 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY . .
 # 执行构建命令 (vite build)，生成的静态文件会存放在 /app/dist 目录
 RUN pnpm build
+RUN apk add --no-cache brotli && \
+    find /app/dist -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.json" \) -exec sh -c 'gzip -c -9 "$1" > "$1.gz"' sh {} \; && \
+    find /app/dist -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.json" \) -exec brotli -f -q 11 {} \;
 
 # ==============================================================================
 # 第二阶段：生产环境 (Production Stage)

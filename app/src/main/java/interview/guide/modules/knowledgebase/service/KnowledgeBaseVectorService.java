@@ -7,6 +7,7 @@ import org.springframework.ai.transformer.splitter.TextSplitter;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class KnowledgeBaseVectorService {
      * @param knowledgeBaseId 知识库ID
      * @param content 知识库文本内容
      */
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void vectorizeAndStore(Long knowledgeBaseId, String content) {
         log.info("开始向量化知识库: kbId={}, contentLength={}", knowledgeBaseId, content.length());
         try {
@@ -83,6 +84,7 @@ public class KnowledgeBaseVectorService {
      * @param topK 返回top K个结果
      * @return 相关文档列表
      */
+    @Transactional(readOnly = true)
     public List<Document> similaritySearch(String query, List<Long> knowledgeBaseIds, int topK) {
         log.info("向量相似度搜索: query={}, kbIds={}, topK={}", query, knowledgeBaseIds, topK);
         
