@@ -20,11 +20,9 @@ InterviewGuide 是一个集成了简历分析、模拟面试和知识库管理�
 
 该项目 forked from [Snailclimb/interview-guide](https://github.com/Snailclimb/interview-guide)，并做了以下优化：
 
-- 新增JSON修复工具类处理LLM响应异常；优化ResumeGradingService增加JSON修复重试机制
+- 新增JSON修复工具类处理LLM响应异常；优化ResumeGradingService增加JSON修复重试机制；升级ANTLR运行时版本至4.13.2，解决ATN反序列化版本不匹配问题
 - 添加Maven构建支持（mvnw、pom.xml）
-- 更新依赖配置和文档说明
 - 改进Docker Compose配置和.gitignore
-- 升级ANTLR运行时版本至4.13.2，解决ATN反序列化版本不匹配问题
 - 前端Docker构建阶段添加Brotli和Gzip压缩，提升静态资源加载性能
 - 优化Nginx配置，支持预压缩静态文件并设置更优的缓存策略
 - 为数据库连接池添加HikariCP详细配置，提升连接管理稳定性
