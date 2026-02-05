@@ -305,6 +305,8 @@ pnpm dev
 
 前端服务启动于 `http://localhost:5173`
 
+登录MinIO 控制台，创建一个 Bucket 名称为 interview-guide。
+
 
 ## Docker 快速部署
 
@@ -334,16 +336,14 @@ docker-compose up -d --build
 ### 3. 服务访问
 启动完成后，您可以通过以下地址访问各个服务：
 
-| 服务             | 地址                                           | 默认账号     | 默认密码     | 说明                   |
-| ---------------- | ---------------------------------------------- | ------------ | ------------ | ---------------------- |
-| **前端应用**     | [http://localhost](http://localhost)           | -            | -            | 用户访问入口           |
-| **后端 API**     | [http://localhost:8080](http://localhost:8080) | -            | -            | Swagger/接口文档       |
-| **MinIO 控制台** | [http://localhost:9001](http://localhost:9001) | `minioadmin` | `minioadmin` | 对象存储管理           |
-| **MinIO API**    | `localhost:9000`                               | -            | -            | S3 兼容接口            |
-| **PostgreSQL**   | `localhost:5432`                               | `postgres`   | `password`   | 数据库 (包含 pgvector) |
-| **Redis**        | `localhost:6379`                               | -            | -            | 缓存与消息队列         |
-
-登录MinIO 控制台，创建一个 Bucket 名称为 interview-guide。
+| 服务             | 地址                                           | 默认账号     | 默认密码     | 说明                                   |
+| ---------------- | ---------------------------------------------- | ------------ | ------------ |--------------------------------------|
+| **前端应用**     | [http://localhost](http://localhost)           | -            | -            | 用户访问入口                               |
+| **后端 API**     | [http://localhost:8080](http://localhost:8080) | -            | -            | Swagger/接口文档                         |
+| **MinIO 控制台** | [http://localhost:9001](http://localhost:9001) | `minioadmin` | `minioadmin` | 对象存储管理，容器自动创建 interview-guide bucket |
+| **MinIO API**    | `localhost:9000`                               | -            | -            | S3 兼容接口                              |
+| **PostgreSQL**   | `localhost:5432`                               | `postgres`   | `password`   | 数据库 (包含 pgvector)                    |
+| **Redis**        | `localhost:6379`                               | -            | -            | 缓存与消息队列                              |
 
 ### 4. 常用运维命令
 

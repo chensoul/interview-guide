@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
+import jakarta.annotation.PostConstruct;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,6 +28,10 @@ public class FileStorageService {
     private final S3Client s3Client;
     private final StorageConfigProperties storageConfig;
 
+    @PostConstruct
+    public void init() {
+        ensureBucketExists();
+    }
     /**
      * 上传简历文件
      */
